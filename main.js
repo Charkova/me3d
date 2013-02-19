@@ -1,56 +1,84 @@
+// SET UP THE SCENE BASICS
+//////////////////////////
+container = document.createElement( 'div' );
+document.body.appendChild( container );
+stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.top = '0px';
+container.appendChild( stats.domElement );
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-var controls,time = Date.now();
 
-ray = new THREE.Raycaster();
-				ray.ray.direction.set( 0, -1, 0 );
-
-
-
-var fog = new THREE.FogExp2(0x000000,.15);
+// scene fog
+var fog = new THREE.Fog(0x000000,1,200);
 // fog.hex = 0x000000;
-// fog.density = .12;
 scene.fog = fog;
 
+// renderer
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var geometry = new THREE.PlaneGeometry(50,50,100,100);
-var material = new THREE.MeshLambertMaterial({color: 0x000000});
-//var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// GRID GEOMETRY
+////////////////
 
-var geometry2 = new THREE.PlaneGeometry(50,50,100,100);
-var material2 = new THREE.MeshBasicMaterial({color: 0x00FFFF, wireframe:true});
-//var material2 = new THREE.MeshBasicMaterial({color: 0xCCCCCC, wireframe:true});
-var cube2 = new THREE.Mesh(geometry2, material2);
-scene.add(cube2);
+// base plane 
+var basePlaneGeo = new THREE.PlaneGeometry(50,50,100,100);
+var basePlaneMat = new THREE.MeshLambertMaterial({color: 0x000000, transparent:true, opacity:.15});
+var basePlane = new THREE.Mesh(basePlaneGeo, basePlaneMat);
+basePlane.rotation.x = de2ra(-90);
+basePlane.position.y = - .01;
+scene.add(basePlane);
 
 
-var geometry3 = new THREE.CubeGeometry(20,20,20);
-var material3 = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
-var cube3 = new THREE.Mesh(geometry3, material3);
-scene.add(cube3);
+// base grid
+var baseGridGeo = new THREE.PlaneGeometry(50,50,100,100);
+var baseGridMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, wireframe:true, transparent:true, opacity:.15});
+var baseGrid = new THREE.Mesh(baseGridGeo, baseGridMat);
+baseGrid.rotation.x = de2ra(-90);
+scene.add(baseGrid);
 
-var geometry4 = new THREE.CubeGeometry(.7,3,.7);
-var material4 = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity:.85, transparent:true});
-var cube4 = new THREE.Mesh(geometry4, material4);
-//scene.add(cube4);
+// zone box
+var zoneBoxGeo = new THREE.CubeGeometry(27,27,27,54,54,54);
+var zoneBoxMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, wireframe:true, transparent:true, opacity:.15});
+var zoneBox = new THREE.Mesh(zoneBoxGeo, zoneBoxMat);
+scene.add(zoneBox);
 
-var light = new THREE.PointLight( 0xFFFFFF, 1, 10 );
-light.position.set( 0, 3, 0);
-scene.add( light );
+// skybox
+var skyboxGeo = new THREE.CubeGeometry(50,50,50,100,100,100);
+var skyboxMat = new THREE.MeshBasicMaterial({color: 0xFF00FF, wireframe:true, transparent:true, opacity:.25});
+var skybox = new THREE.Mesh(skyboxGeo, skyboxMat);
+skybox.position.y = 24.95;
+//scene.add(skybox);
 
+// skybox2
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/2294472375_24a3b8ef46_o.jpg' ) } ) );
+skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/360-degree_Panorama_of_the_Southern_Sky_edit2.jpg' ) } ) );
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/2121711996_e390ce90ba_o.jpg' ) } ) );
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/eyefinity_3d_background_by_thecleverfox-d4txwm8.png' ) } ) );
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/heilman.new.york.times.square.360.jpg' ) } ) );
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/mirrors_edge_bay_360_panorama_by_dejco-d32dcsh.png' ) } ) );
+//skybox2 = new THREE.Mesh( new THREE.SphereGeometry( 100, 60, 40 ), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/SonyCenter_360panorama.jpg' ) } ) );
+skybox2.position.y = 30;
+skybox2.scale.x = -1;
+skybox2.scale.y = .5;
+scene.add( skybox2 );
+
+
+// SCENE LIGHTING
+/////////////////
+var sceneLight = new THREE.PointLight( 0xFFFFFF, 1, 10 );
+sceneLight.position.set( 0, 3, 0);
+scene.add( sceneLight );
+
+
+// CAMERA POSITIONING
+/////////////////////
 camera.position.x = 5;
 camera.position.y = 3;
 camera.position.z = 5;
 
-cube.rotation.x = de2ra(-90);
-cube2.rotation.x = de2ra(-90);
-cube2.position.y = .01;
-cube3.position.y = 5;
 camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 
 // STUFF FOR MOUSEOVER INTERACTION //
@@ -110,7 +138,9 @@ document.onkeyup = function(evt) {
     }
 };
 
-var velocity = 0;
+var velocity = .015;
+
+
 // RENDER LOOP //
 /////////////////
 function render() {
@@ -118,35 +148,28 @@ function render() {
     
     //controls.update( Date.now() - time );
     if(up) {
-    	if(velocity < .0025) {
-    		velocity += .00001;
-    	} 
     	camera.position.x -= velocity;
     	camera.position.z -= velocity;      	
-    } else {
-    	if(velocity > 0) {
-    		velocity -= .00001;
-    	}
-    	camera.position.x -= velocity;
-    	camera.position.z -= velocity; 
     }
     if(down) {
     	 
-    	camera.position.x += .0025;
-    	camera.position.z += .0025;     	
+    	camera.position.x += velocity;
+    	camera.position.z += velocity;     	
     }
     if(left) {
-    	camera.position.z += .0025;
-    	camera.position.x -= .0025;    	
+    	camera.position.z += velocity;
+    	camera.position.x -= velocity;    	
     }
     if(right) {
-    	camera.position.z -= .0025;
-    	camera.position.x += .0025;     	
+    	camera.position.z -= velocity;
+    	camera.position.x += velocity;     	
     }
     renderer.render(scene, camera);
+    stats.update();
 }
 
 render();
+
 
 
 // HELPER FUNCTIONS //
@@ -236,16 +259,54 @@ function makeBuilding(baseURL, floorURL, crownURL, floors, scale, scene, locatio
 
 // MAKE SOME BUILDINGS!!
 ////////////////////////
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 20, new THREE.Vector3(1.5,1,1.5), scene, new THREE.Vector3(0,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 3, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(1.5,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 6, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(1.5,0,1.5));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 8, new THREE.Vector3(2,1,1), scene, new THREE.Vector3(0,0,1.5));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 20, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 3, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 6, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,2));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 8, new THREE.Vector3(2,1,1), scene, new THREE.Vector3(0,0,2));
 
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 1, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-1.5,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 7, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-1.5,0,-1.5));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 4, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,-1.5));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 1, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 7, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,-2));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 4, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,-2));
+ 
 
 
 
+// GRIDPLANES
+/////////////
+function makeGrid (unitSize, padding, totalUnits ,scene) {
+	
+	//var unitXPos = 0 - (totalUnits*unitSize)/2;
+	var unitXPos = 0;
+	var unitZPos = 0;
+	var opacity = .25;
+	var gridObject = new THREE.Object3D();
+	
+	for(var i=0; i<totalUnits; i++) {
+		
+		for(var j=0; j<totalUnits; j++) {
+			var unitGeo = new THREE.PlaneGeometry(unitSize,unitSize);
+			var unitMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity: opacity, transparent:true});
+			var unitMesh = new THREE.Mesh(unitGeo,unitMat);
+						
+			unitMesh.rotation.x = de2ra(-90);
+			unitMesh.position.x = unitXPos;
+			unitMesh.position.z = unitZPos;
+			gridObject.add(unitMesh);
+			
+			unitXPos += unitSize + padding;
+		}
+			
+			unitXPos = 0;
+			unitZPos += unitSize + padding;
+		
+	}
+	
+	gridObject.position.x -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
+	gridObject.position.z -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
+	scene.add(gridObject);
+
+}
+
+makeGrid(2,.5,11,scene);
 
 

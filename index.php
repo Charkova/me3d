@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Untitled Document</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://raw.github.com/mrdoob/stats.js/master/build/stats.min.js"></script>
+
 <style>
 canvas {
     width: 100%; height: 100%
