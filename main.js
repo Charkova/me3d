@@ -19,6 +19,8 @@ scene.fog = fog;
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.sortObjects = false;
+
 
 // GRID GEOMETRY
 ////////////////
@@ -37,7 +39,9 @@ var baseGridGeo = new THREE.PlaneGeometry(50,50,100,100);
 var baseGridMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, wireframe:true, transparent:true, opacity:.15});
 var baseGrid = new THREE.Mesh(baseGridGeo, baseGridMat);
 baseGrid.rotation.x = de2ra(-90);
+baseGrid.name = 'base';
 scene.add(baseGrid);
+//console.log(scene.getChildByName('base'));
 
 // zone box
 var zoneBoxGeo = new THREE.CubeGeometry(27,27,27,54,54,54);
@@ -91,6 +95,15 @@ camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 // MOVEMENT //
 //////////////
 var up = false, down = false, right=false,left=false;
+var isClicked=false;
+
+document.onmousedown = function(e) {
+	isClicked=true;	
+}
+
+document.onmouseup = function(e) {
+	isClicked=false;
+}
 
 document.onkeydown = function(evt) {
     evt = evt || window.event;
@@ -141,10 +154,192 @@ document.onkeyup = function(evt) {
 var velocity = .015;
 
 
+// GRIDPLANES
+/////////////
+var gridGroup;
+var buildingGroup = new THREE.Object3D;
+buildingGroup.name = 'buildings';
+scene.add(buildingGroup);
+
+makeGrid(2,.5,11,scene);
+
+function makeGrid (unitSize, padding, totalUnits ,scene) {
+	
+	//var unitXPos = 0 - (totalUnits*unitSize)/2;
+	var unitXPos = 0;
+	var unitZPos = 0;
+	var opacity = .25;
+	var gridObject = new THREE.Object3D();
+	var gridLetters = ['A','B','C','D','E','F','G','H','I','K','L','H'];
+	var gridNumbers = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+	
+	for(var i=0; i<totalUnits; i++) {
+		
+		for(var j=0; j<totalUnits; j++) {
+			var unitGeo = new THREE.PlaneGeometry(unitSize,unitSize);
+			var unitMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity: opacity, transparent:true});
+			var unitMesh = new THREE.Mesh(unitGeo,unitMat);
+			
+			//unitMesh.name = gridLetters[i] + (gridNumbers[j]);
+			unitMesh.data = {codeName:"viper", coords:gridLetters[i] + (gridNumbers[j])};
+						
+			unitMesh.rotation.x = de2ra(-90);
+			unitMesh.position.x = unitXPos;
+			unitMesh.position.z = unitZPos;
+			gridObject.add(unitMesh);
+			
+			unitXPos += unitSize + padding;
+		}
+			
+			unitXPos = 0;
+			unitZPos += unitSize + padding;
+		
+	}
+	
+	gridObject.position.x -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
+	gridObject.position.z -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
+	//gridGroup = gridObject;
+	gridObject.name = 'grid';
+	scene.add(gridObject);
+
+}
+
+
+
+// MAKE SOME BUILDINGS!!
+////////////////////////
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 20, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 3, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 6, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,2));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 8, new THREE.Vector3(2,1,1), scene, new THREE.Vector3(0,0,2));
+
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 1, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,0));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 7, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,-2));
+makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 4, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,-2));
+ 
+
+
+
+
+
+
+
+// MOUSEOVER PICKING!!! //
+//////////////////////////
+var mouse = { x: 0, y: 0 }, INTERSECTED, INTERSECTEDBUILDING;
+
+projector = new THREE.Projector();
+
+document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+function onDocumentMouseMove( event ) {
+
+	event.preventDefault();
+
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+
+function pick() {
+	// find intersections
+	
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	projector.unprojectVector( vector, camera );
+
+	var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	var scenegroups = scene.getChildByName('grid');
+	
+	var intersects = raycaster.intersectObjects( scenegroups.children );
+	
+	if ( intersects.length > 0 ) {
+		
+		
+		// if its not the same, clear the old one and update the new one		
+		if ( INTERSECTED != intersects[ 0 ].object ) {
+			if ( INTERSECTED ) INTERSECTED.material.opacity = .25;
+	
+			INTERSECTED = intersects[ 0 ].object;
+			INTERSECTED.material.opacity = .75;
+			if(isClicked) alert(INTERSECTED.data.coords);
+			isClicked=false;
+		// its the same or a new item
+		} else { 
+			INTERSECTED = intersects[ 0 ].object;
+			INTERSECTED.material.opacity = .75;
+			if(isClicked) alert(INTERSECTED.data.coords);
+			isClicked=false;
+		}
+	// nothing selected so set the currently lit one to normal
+	} else {
+	
+		if ( INTERSECTED ) INTERSECTED.material.opacity = .25;
+	
+		INTERSECTED = null;
+	
+	}
+}
+
+
+function pickBuilding() {
+	// find intersections
+	
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	projector.unprojectVector( vector, camera );
+
+	var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	var scenegroups = scene.getChildByName('buildings');
+	console.log(scenegroups.children);
+	
+	var intersects = raycaster.intersectObjects( scenegroups.children, true);
+	
+	
+	if ( intersects.length > 0 ) {
+		
+		
+		// if its not the same, clear the old one and update the new one		
+		if ( INTERSECTEDBUILDING != intersects[ 0 ].object ) {
+			if ( INTERSECTEDBUILDING ) INTERSECTEDBUILDING.material.opacity = .85;
+	
+			INTERSECTEDBUILDING = intersects[ 0 ].object;
+			INTERSECTEDBUILDING.material.opacity = 1;
+			if(isClicked) alert('building');
+			isClicked=false;
+		// its the same or a new item
+		} else { 
+			INTERSECTEDBUILDING = intersects[ 0 ].object;
+			INTERSECTEDBUILDING.material.opacity = 1;
+			if(isClicked) alert('building');
+			isClicked=false;
+		}
+	// nothing selected so set the currently lit one to normal
+	} else {
+	
+		if ( INTERSECTEDBUILDING ) INTERSECTEDBUILDING.material.opacity = .85;
+	
+		INTERSECTEDBUILDING = null;
+	
+	}
+}
+
+
+
+
+
+
+
+
 // RENDER LOOP //
 /////////////////
 function render() {
     requestAnimationFrame(render);
+    
+
+    
+    pick();
+    pickBuilding();
     
     //controls.update( Date.now() - time );
     if(up) {
@@ -248,7 +443,7 @@ function makeBuilding(baseURL, floorURL, crownURL, floors, scale, scene, locatio
 		building.position = location;
 		building.scale = scale;
 		
-		scene.add(building);
+		buildingGroup.add(building);
 		
 		console.log(scene);
 			
@@ -257,56 +452,6 @@ function makeBuilding(baseURL, floorURL, crownURL, floors, scale, scene, locatio
 }
 
 
-// MAKE SOME BUILDINGS!!
-////////////////////////
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 20, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 3, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 6, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(2,0,2));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 8, new THREE.Vector3(2,1,1), scene, new THREE.Vector3(0,0,2));
 
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 1, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,0));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 7, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(-2,0,-2));
-makeBuilding('models/base.json', 'models/floor.json', 'models/crown.json', 4, new THREE.Vector3(1,1,1), scene, new THREE.Vector3(0,0,-2));
- 
-
-
-
-// GRIDPLANES
-/////////////
-function makeGrid (unitSize, padding, totalUnits ,scene) {
-	
-	//var unitXPos = 0 - (totalUnits*unitSize)/2;
-	var unitXPos = 0;
-	var unitZPos = 0;
-	var opacity = .25;
-	var gridObject = new THREE.Object3D();
-	
-	for(var i=0; i<totalUnits; i++) {
-		
-		for(var j=0; j<totalUnits; j++) {
-			var unitGeo = new THREE.PlaneGeometry(unitSize,unitSize);
-			var unitMat = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity: opacity, transparent:true});
-			var unitMesh = new THREE.Mesh(unitGeo,unitMat);
-						
-			unitMesh.rotation.x = de2ra(-90);
-			unitMesh.position.x = unitXPos;
-			unitMesh.position.z = unitZPos;
-			gridObject.add(unitMesh);
-			
-			unitXPos += unitSize + padding;
-		}
-			
-			unitXPos = 0;
-			unitZPos += unitSize + padding;
-		
-	}
-	
-	gridObject.position.x -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
-	gridObject.position.z -= ((totalUnits*unitSize)/2)+(((totalUnits-1)/2)/2)-unitSize/2;
-	scene.add(gridObject);
-
-}
-
-makeGrid(2,.5,11,scene);
 
 
