@@ -78,8 +78,17 @@ $(document).ready(function(){
 	///////////////////////////////////
 	var myEmitter = new ME3D.Emitter();
 	myAvatar.avatar.add(myEmitter.getSystem());
-
 	
+	// BUILDINGS!!
+	///////////////////////////////////
+	myBuilder = new ME3D.Builder(myWorld.scene, myPhysics);
+ 	myBuilder.makeBuilding(4, new THREE.Vector3(1,1,1), new THREE.Vector3(-2.5,0,0), 'City Hall');
+	
+
+	// PICKING!!
+	///////////////////////////////////
+	var myPicker = new ME3D.Picker(myWorld.scene, myWorld.camera);
+		
 	// debug
 	///////////////////////////////////
 	myStage.log();
@@ -102,6 +111,8 @@ $(document).ready(function(){
 	    //myWorld.camera.position.z = myAvatar.avatar.position.z;
 	    //console.log(myAvatar.avatar.getChildPosition('cameraActual'));
 	    myEmitter.update(delta);
+	    myPicker.pick();
+	    myPicker.pickBuilding();
 	    
 	    
 	}

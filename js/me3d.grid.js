@@ -1,12 +1,10 @@
 /**
  * @author C.Christopher Kovach / http://www.cckovach.com
- * @version 0.1.0
+ * @version 0.1.1
  * Generates grid squares for the MetaEden world.
  */
 
 // TODO: default parameters and arguments
-// TODO: figure out collision detection for grid spaces?
-// TODO: update to include changes in grid naming by @jthantranon
 
 ME3D.Grid = function(unitSize, padding, totalUnits) {
 	
@@ -19,9 +17,16 @@ ME3D.Grid = function(unitSize, padding, totalUnits) {
 	var unitZPos = 0;
 	var opacity = .25;
 	this.gridObject = new THREE.Object3D();
-	var gridLetters = ['A','B','C','D','E','F','G','H','I','K','L','H'];
-	var gridNumbers = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 	
+	var gridNumbers = [];
+	var startNumber = Math.floor(-((totalUnits-1)/2));
+	
+	// make grid name array
+	for(var i=0,j=totalUnits; i<j; i++){
+		gridNumbers.push(startNumber);
+		startNumber++;	
+	};
+		
 	for(var i=0; i<totalUnits; i++) {
 		
 		for(var j=0; j<totalUnits; j++) {
@@ -30,7 +35,7 @@ ME3D.Grid = function(unitSize, padding, totalUnits) {
 			var unitMesh = new THREE.Mesh(unitGeo,unitMat);
 			
 			//unitMesh.name = gridLetters[i] + (gridNumbers[j]);
-			unitMesh.data = {codeName:"viper", coords:gridLetters[i] + (gridNumbers[j])};
+			unitMesh.data = {codeName:"viper", coords:gridNumbers[j] + ',' + (gridNumbers[i])};
 			
 			unitMesh.useQuaternion = true;						
 			//unitMesh.rotation.x = ME3D.de2ra(-90);
