@@ -116,7 +116,7 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		if ( this.moveForward ) { 
 			this.object.position.x -= actualMoveSpeed;
 			this.object.position.z -= actualMoveSpeed;
-			console.log(this.element.getChildByName('cameraTarget').position.x);
+			//console.log(this.element.getChildByName('cameraTarget').position.x);
 			if (this.element.getChildByName('cameraTarget').position.x < 2.3) {
 				this.element.getChildByName('cameraTarget').position.x += actualCamSpeed;				
 			}
@@ -130,7 +130,7 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		if ( this.moveBackward ) { 
 			this.object.position.x += actualMoveSpeed;
 			this.object.position.z += actualMoveSpeed;
-			console.log(this.element.getChildByName('cameraTarget').position.x);
+			//console.log(this.element.getChildByName('cameraTarget').position.x);
 			if (this.element.getChildByName('cameraTarget').position.x > 1.7) {
 				this.element.getChildByName('cameraTarget').position.x -= actualCamSpeed;				
 			}
@@ -143,7 +143,7 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		if ( this.moveLeft ) { 
 			this.object.position.x -= actualMoveSpeed;
 			this.object.position.z += actualMoveSpeed;
-			console.log(this.element.getChildByName('cameraTarget').position.x);
+			//console.log(this.element.getChildByName('cameraTarget').position.x);
 			if (this.element.getChildByName('cameraTarget').position.x < 2.3) {
 				this.element.getChildByName('cameraTarget').position.x += actualCamSpeed;				
 			}
@@ -156,7 +156,7 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		if ( this.moveRight ) { 
 			this.object.position.x += actualMoveSpeed;
 			this.object.position.z -= actualMoveSpeed;
-			console.log(this.element.getChildByName('cameraTarget').position.x);
+			//console.log(this.element.getChildByName('cameraTarget').position.x);
 			if (this.element.getChildByName('cameraTarget').position.x > 1.7) {
 				this.element.getChildByName('cameraTarget').position.x -= actualCamSpeed;				
 			}

@@ -1,13 +1,18 @@
 /**
  * @author C.Christopher Kovach / http://www.cckovach.com
- * @version 0.1.0
+ * @version 0.1.1
  * Currently creates a generic avatar model and effects for MetaEden.
  */
 
 // TODO: default parameters and arguments
 // TODO: evolve avatar design
 
-ME3D.Avatar = function () {
+ME3D.Avatar = function (location) {
+	
+	if(typeof location === 'undefined') {
+		this.location = new THREE.Vector3(0,0,0);		
+	} else { this.location = location; }
+	
 	
 	// default properties
 	this.avatar = new THREE.Object3D();
@@ -15,12 +20,15 @@ ME3D.Avatar = function () {
 	this.body.useQuaternion = true;
 	this.glowie = new THREE.ParticleSystem();
 	
+	this.updateRate = 30;
+	this.lastUpdate = 1;
+	
 	
 	this.body.geometry = new THREE.SphereGeometry (.1,20,20);
 	this.body.material = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity: .75, transparent:true});
-	this.avatar.position.x = 0;
-	this.avatar.position.y = 0;
-	this.avatar.position.z = 0;
+	this.avatar.position.x = this.location.x;
+	this.avatar.position.y = this.location.y;
+	this.avatar.position.z = this.location.z;
 	
 	
 	this.cameraTarget = new THREE.Mesh(new THREE.CubeGeometry(.05,.05,.05), new THREE.MeshNormalMaterial());
@@ -90,6 +98,19 @@ ME3D.Avatar.prototype = {
 	getCameraPosition: function(camera) {
 		
 		return this.avatar.getChildPosition('cameraActual');
+	},
+	
+	getPosition: function() {
+		if (this.lastUpdate == this.updateRate) {
+			this.lastUpdate = 1;
+			return this.avatar.position;
+		} else {
+			this.lastUpdate++;
+		}
+	},
+	
+	setPosition: function(newPosition) {
+		this.avatar.position.set(newPosition);
 	}
 }
 

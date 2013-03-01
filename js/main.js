@@ -43,9 +43,8 @@ $(document).ready(function(){
 	
 	// avatar
 	///////////////////////////////////
-	var myAvatar = new ME3D.Avatar();
+	var myAvatar = new ME3D.Avatar(new THREE.Vector3(1,1,1));
 	myWorld.scene.add(myAvatar.getAvatar());
-	myAvatar.getAvatar().position.y += 2;
 	console.log(myBounds.getBoundsMax(myAvatar.getBoundsMesh()));
 	var avatarBounds = myBounds.getBoundsMax(myAvatar.getBoundsMesh());
 	avatarBounds.multiplyScalar(2);
@@ -81,23 +80,41 @@ $(document).ready(function(){
 	
 	// BUILDINGS!!
 	///////////////////////////////////
-	myBuilder = new ME3D.Builder(myWorld.scene, myPhysics);
- 	myBuilder.makeBuilding(4, new THREE.Vector3(1,1,1), new THREE.Vector3(-2.5,0,0), 'City Hall');
+	//myBuilder = new ME3D.Builder(myWorld.scene, myPhysics);
+ 	//myBuilder.makeBuilding(4, new THREE.Vector3(1,1,1), new THREE.Vector3(-2.5,0,0), 'City Hall');
 	
 
 	// PICKING!!
 	///////////////////////////////////
 	var myPicker = new ME3D.Picker(myWorld.scene, myWorld.camera);
 		
-	// debug
-	///////////////////////////////////
-	myStage.log();
-	
+		
 	// controls	
 	///////////////////////////////////
 	var controlsA = new ME3D.AvatarControls(avatarController, myAvatar.avatar);
 	//var controlsC = new ME3D.CameraControls(myWorld.camera);
 	//var controls = new ME3D.AvatarControls(cube);
+	
+	
+	
+	// avatar location function hack
+	///////////////////////////////////
+	var oldAvatarLocation;
+	
+	var showAvatarLoc = function() {
+		var value = myAvatar.getPosition();
+		
+		if(!$('#location').length) {
+			$('body').append('<div id="location" style="position:absolute; top:50px; left:10px; font-weight:bold; color:#FFFFFF"></div>');
+		}
+		
+		if(typeof value !== 'undefined') {
+			$('#location').empty();
+			$('#location').text(value.x + ', '+ value.y + ', ' + value.z);
+			
+		}
+	} // now adding this function to my loop below
+	
 	
 	// UGH, NO WAY AROUND THIS RIGHT NOW...
 	var resolveControls = function() {
@@ -113,12 +130,14 @@ $(document).ready(function(){
 	    myEmitter.update(delta);
 	    myPicker.pick();
 	    myPicker.pickBuilding();
-	    
-	    
+	    showAvatarLoc();	    
 	}
 	
-	
+	// debug
+	///////////////////////////////////
+	myStage.log();
 	console.log(myAvatar.avatar);
+	console.log(myAvatar.getPosition());
 	
 
 	// renderer

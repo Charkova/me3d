@@ -91,7 +91,7 @@ ME3D.Picker = function (scene, camera) {
 		var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 	
 		var scenegroups = scene.getChildByName('buildings');
-		console.log(typeof scenegroups);
+		//console.log(typeof scenegroups);
 		
 		if (typeof scenegroups == 'undefined') {
 			return false;
