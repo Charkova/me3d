@@ -1,6 +1,6 @@
 /**
  * @author C.Christopher Kovach / http://www.cckovach.com
- * @version 0.1.3
+ * @version 0.1.4
  * Makes buildings!!
  */
 
@@ -91,37 +91,42 @@ ME3D.Picker = function (scene, camera) {
 		var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 	
 		var scenegroups = scene.getChildByName('buildings');
-		//console.log(scenegroups.children);
+		console.log(typeof scenegroups);
 		
-		var intersects = raycaster.intersectObjects( scenegroups.children, true);
+		if (typeof scenegroups == 'undefined') {
+			return false;
+		} 
 		
-		
-		if ( intersects.length > 0 ) {
+			var intersects = raycaster.intersectObjects( scenegroups.children, true);
 			
 			
-			// if its not the same, clear the old one and update the new one		
-			if ( INTERSECTEDBUILDING != intersects[ 0 ].object ) {
+			if ( intersects.length > 0 ) {
+				
+				
+				// if its not the same, clear the old one and update the new one		
+				if ( INTERSECTEDBUILDING != intersects[ 0 ].object ) {
+					if ( INTERSECTEDBUILDING ) INTERSECTEDBUILDING.material.opacity = .85;
+			
+					INTERSECTEDBUILDING = intersects[ 0 ].object;
+					INTERSECTEDBUILDING.material.opacity = 1;
+					if(isClicked) console.debug('building');
+					isClicked=false;
+				// its the same or a new item
+				} else { 
+					INTERSECTEDBUILDING = intersects[ 0 ].object;
+					INTERSECTEDBUILDING.material.opacity = 1;
+					if(isClicked) console.debug('building');
+					isClicked=false;
+				}
+			// nothing selected so set the currently lit one to normal
+			} else {
+			
 				if ( INTERSECTEDBUILDING ) INTERSECTEDBUILDING.material.opacity = .85;
-		
-				INTERSECTEDBUILDING = intersects[ 0 ].object;
-				INTERSECTEDBUILDING.material.opacity = 1;
-				if(isClicked) console.debug('building');
-				isClicked=false;
-			// its the same or a new item
-			} else { 
-				INTERSECTEDBUILDING = intersects[ 0 ].object;
-				INTERSECTEDBUILDING.material.opacity = 1;
-				if(isClicked) console.debug('building');
-				isClicked=false;
+			
+				INTERSECTEDBUILDING = null;
+			
 			}
-		// nothing selected so set the currently lit one to normal
-		} else {
 		
-			if ( INTERSECTEDBUILDING ) INTERSECTEDBUILDING.material.opacity = .85;
-		
-			INTERSECTEDBUILDING = null;
-		
-		}
 	}
 	
 	return this;
