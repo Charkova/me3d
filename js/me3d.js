@@ -10,11 +10,13 @@
 
 
 // top-level namespace being assigned an object literal
-var ME3D = ME3D || { REVISION: '2' };
+var ME3D = ME3D || { REVISION: '3',
+					 tickList: [],
+					 debug:false };
 
 // a convenience function for parsing string namespaces and
 // automatically generating nested namespaces
-function extend( ns, ns_string ) {
+function namespace( ns, ns_string ) {
     var parts = ns_string.split('.'),
         parent = ns,
         pl, i;
@@ -32,6 +34,46 @@ function extend( ns, ns_string ) {
     return parent;
 }
 
+// inheritance wrapper
+ME3D.surrogate = function() {};
+
+ME3D.extend = function (base,sub) {
+	// Copy the prototype from the base to setup inheritance
+    ME3D.surrogate.prototype = base.prototype;
+    // Tricky huh?
+    sub.prototype = new ME3D.surrogate();
+    // Remember the constructor property was set wrong, let's fix it
+    sub.prototype.constructor = sub;
+}
+
+
+ME3D.log(args) = function(args) {
+	if(ME3D.debug) {
+		console.log(args);
+	}
+}
+
 ME3D.de2ra = function(degree) {
 	return degree*(Math.PI/180);
 };
+
+ME3D.Ticker = {
+	
+	list: [],
+	
+	add: function(item) {
+		this.list.push(item);
+	},
+	
+	run: function() {
+		for(var i=0,j=ME3D.Ticker.list.length;i<j;i++) {
+			ME3D.Ticker.list[i].tick();
+		}
+	}
+}
+
+ME3D.registerTick = function(entity) {
+	ME3D.Ticker.push(entity);
+};
+
+
