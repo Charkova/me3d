@@ -29,6 +29,7 @@
     <body>
         <script src="js/me3d.js"></script>
         <script src="js/meui.js"></script>
+        <script src="js/me3d.entity.js"></script>
         <script src="js/me3d.scene.js"></script>
         <script src="js/me3d.physics.js"></script>
         <script src="js/me3d.population.js"></script>
