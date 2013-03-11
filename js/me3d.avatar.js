@@ -9,11 +9,15 @@
 
 ME3D.Avatar = function (location) {
 	
+	ME3D.Entity.call(this);
+	this.init();
+	this.sparkles = new ME3D.Emitter();
+	
 	if(typeof location === 'undefined') {
 		this.location = new THREE.Vector3(0,0,0);		
 	} else { this.location = location; }
 	
-	
+		
 	// default properties
 	this.avatar = new THREE.Object3D();
 	this.body = new THREE.Mesh();
@@ -65,16 +69,62 @@ ME3D.Avatar = function (location) {
 	
 	this.avatar.add(this.body);
 	this.avatar.add(this.glowie);
+	this.avatar.add(this.sparkles.getSystem());
 	this.avatar.add(this.cameraTarget);
 	this.avatar.add(this.cameraActual);
 	
 	this.avatar.dirtyVertices = true;
 	
+	this.spotDir = 'up';
+	this.spotDirSide = 'left';
+	
 	// function getBoundsMesh() {
 		// return this.body;
 	// }	
 	
-	//return this.avatar;		
+	//return this.avatar;
+	//ME3D.registerTick(this);
+	
+	console.log(this.glowie);
+	this.tick = function(delta) {
+		var spot = this.glowie.position;
+		
+		this.sparkles.update(delta);
+				
+		if(this.spotDir == 'up') {
+			if(spot.y < .02) {
+				spot.y += Math.random()*.0001;
+			} else {
+				this.spotDir = 'down';
+			}			
+		}
+		
+		if(this.spotDir == 'down') {
+			if(spot.y > -.01) {
+				spot.y -= Math.random()*.0001;
+			} else {
+				this.spotDir = 'up';
+			}
+		}
+		
+		if(this.spotDir == 'left') {
+			if(spot.x < .03) {
+				spot.x += Math.random()*.0001;
+			} else {
+				this.spotDir = 'right';
+			}			
+		}
+		
+		if(this.spotDir == 'right') {
+			if(spot.x > -.03) {
+				spot.x -= Math.random()*.0001;
+			} else {
+				this.spotDir = 'left';
+			}
+		}
+	}
+	
+		
 
 };
 
@@ -111,6 +161,11 @@ ME3D.Avatar.prototype = {
 	
 	setPosition: function(newPosition) {
 		this.avatar.position.set(newPosition);
-	}
+	},
+	
+	// tick: function(delta) {
+		// //this.avatar.glowie.position.y += .1;
+		// console.log('wtf');
+	// }
 }
 
