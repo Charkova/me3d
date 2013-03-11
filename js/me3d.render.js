@@ -11,11 +11,13 @@ ME3D.Render = function (scene, camera, props) {
 	
 	self.scene = scene;
 	self.camera = camera;	
+	
+	self.element;
 		
 	// default scene properties
 	///////////////////////////////////
 	// TODO: actually check values and assign parameters
-	// TODO: why is page height/width being calculated wrong?
+	// TODO: why is page height/width being calculated wrong?         
 	self.props = {
 		width: $(window).width(), 
 		height: $(window).height(),
@@ -48,6 +50,7 @@ ME3D.Render = function (scene, camera, props) {
 	renderer.sortObjects = false;
 	renderer.setSize(self.props.width, self.props.height);
 	self.props.container.appendChild( renderer.domElement );
+	self.element = renderer.domElement;
 	
 	
 	// GOGOGOGOGO
@@ -76,6 +79,17 @@ ME3D.Render = function (scene, camera, props) {
 	}
 		
 	function _render() {    
+	    
+	    // resolve ticks
+	    for(var i=0,j=ME3D.tickList.length; i<j; i++){
+			
+			if(typeof self.renderQueue[i][1] === 'undefined') {
+				self.renderQueue[i][0]();
+			} else {
+				self.renderQueue[i][0](self.renderQueue[i][1]);
+			}
+		};	    
+	    
 	    
 	    // resolve queue
 		for(var i=0,j=self.renderQueue.length; i<j; i++){
