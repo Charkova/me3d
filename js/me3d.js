@@ -34,6 +34,7 @@ function namespace( ns, ns_string ) {
     return parent;
 }
 
+
 // inheritance wrapper
 ME3D.surrogate = function() {};
 
@@ -47,7 +48,7 @@ ME3D.extend = function (base,sub) {
 }
 
 
-ME3D.log(args) = function(args) {
+ME3D.log = function(args) {
 	if(ME3D.debug) {
 		console.log(args);
 	}
@@ -56,6 +57,9 @@ ME3D.log(args) = function(args) {
 ME3D.de2ra = function(degree) {
 	return degree*(Math.PI/180);
 };
+
+ME3D.Clock = new THREE.Clock();
+
 
 ME3D.Ticker = {
 	
@@ -66,14 +70,15 @@ ME3D.Ticker = {
 	},
 	
 	run: function() {
+		var delta = ME3D.Clock.getDelta();
 		for(var i=0,j=ME3D.Ticker.list.length;i<j;i++) {
-			ME3D.Ticker.list[i].tick();
+			ME3D.Ticker.list[i].tick(delta);
 		}
 	}
 }
 
 ME3D.registerTick = function(entity) {
-	ME3D.Ticker.push(entity);
+	ME3D.Ticker.add(entity);
 };
 
 
