@@ -25,7 +25,7 @@ ME3D.Physics = function () {
 		var shape = new CANNON.Box(new CANNON.Vec3(.25,.25,.25));
         var mass = 1;
         var body = new CANNON.RigidBody(mass,shape);
-        console.log(entity.position);
+        //console.log(entity.position);
         body.position = (new CANNON.Vec3(entity.position.x,entity.position.y,entity.position.z));
 		body.quaternion = (new CANNON.Quaternion(
 								entity.quaternion.x,
@@ -38,7 +38,7 @@ ME3D.Physics = function () {
         
         self.bodies.push(physPair);
 		
-		console.log(self.world);
+		//console.log(self.world);
 		
 		return body;
 	}
@@ -71,7 +71,7 @@ ME3D.Physics = function () {
 		var shape = new CANNON.Box(new CANNON.Vec3(bounds.x,bounds.y,bounds.z));
         var mass = 0;
         var body = new CANNON.RigidBody(mass,shape);
-        console.log(entity.position);
+        //console.log(entity.position);
         body.position = (new CANNON.Vec3(entity.position.x,entity.position.y,entity.position.z));
 		body.quaternion = (new CANNON.Quaternion(
 								entity.quaternion.x,
@@ -84,7 +84,7 @@ ME3D.Physics = function () {
         
         self.bodies.push(physPair);
 		
-		console.log(self.world);
+		//console.log(self.world);
 		
 		return body;
 	}
@@ -94,7 +94,7 @@ ME3D.Physics = function () {
 		var shape = new CANNON.Box(new CANNON.Vec3(bounds.x,bounds.y,bounds.z));
         var mass = mass;
         var body = new CANNON.RigidBody(mass,shape);
-        console.log(entity.position);
+        //console.log(entity.position);
         body.position = (new CANNON.Vec3(entity.position.x,entity.position.y,entity.position.z));
 		body.quaternion = (new CANNON.Quaternion(
 								entity.quaternion.x,
@@ -107,7 +107,7 @@ ME3D.Physics = function () {
         
         self.bodies.push(physPair);
 		
-		console.log(self.world);
+		//console.log(self.world);
 		
 		return body;
 	}
