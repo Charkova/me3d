@@ -60,6 +60,37 @@ ME3D.World.prototype = {
 	constructor: ME3D.World,
 	
 	preload: function() {
+		var camera = this.cityView.camera;
+		camera.fov = 120;
+		camera.updateProjectionMatrix();
+		$('#preload').fadeIn({duration:2000});
+		$('#indicator').fadeIn(2000, function() {
+			$('#progress').show();
+			$('#progress').text('0%');
+			var progress = 0;
+			var fovTarget = 0;
+			var preloadTimer = window.setInterval(function(){
+				if(progress >= 25) { $('.percent25').show(); }
+				if(progress >= 50) { $('.percent50').show(); }
+				if(progress >= 75) { $('.percent75').show(); }
+				if(progress <= 100) {
+					$('#progress').text(progress + '%');
+					progress++;					
+				} else {
+					$('.percent100').show();
+					$('#proceed button').fadeIn().on('click', function(){
+						$('#splash').fadeOut({duration:3000, step:function(){
+							if (camera.fov > 60) {
+								camera.fov -= .5;
+								camera.updateProjectionMatrix();
+								console.log(camera.fov);
+							}
+						}});
+					});
+					window.clearInterval(preloadTimer);
+				}
+			},25);
+		});
 		
 	},
 	

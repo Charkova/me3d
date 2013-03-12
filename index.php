@@ -3,7 +3,9 @@
         <head>
         <meta charset="utf-8">
         <title>Meta Eden</title>
-        
+        <link href='http://fonts.googleapis.com/css?family=Titillium+Web:200' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Exo:100,400' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/threedee.css" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="js/vendor/stats.min.js"></script>
         <script src="js/vendor/three.js"></script>
@@ -27,6 +29,22 @@
         </head>
     
     <body>
+        <div id="splash">
+            <div id="preload">
+                <div class="connecting">connecting to the network...</div>
+                <div id="indicator">
+                    <div class="percent25"></div>
+                    <div class="percent50"></div>
+                    <div class="percent75"></div>
+                    <div class="percent100"></div>
+                    <div class="percent75"></div>
+                    <div class="percent50"></div>
+                    <div class="percent25"></div>
+                </div>
+                <div id="proceed"><button type="button" name="" value="" >Proceed</button></div>
+                <div id="progress">100%</div>
+            </div>
+        </div>
         <script src="js/me3d.js"></script>
         <script src="js/meui.js"></script>
         <script src="js/me3d.entity.js"></script>
