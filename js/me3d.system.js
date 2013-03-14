@@ -8,10 +8,8 @@
 
 ME3D.System = function() {
 	
-	this.init = function(){};
+	this.init = function(){ ME3D.Ticker.add(this); };
 	this.tick = function(){};
-	this.hover = function(){ ME3D.Log(this) };
-	this.click = function(){ ME3D.Log(this) };
 	this.destroy = function(){};
 	
 	ME3D.Ticker.add(this);

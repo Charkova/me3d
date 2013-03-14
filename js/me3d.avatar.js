@@ -20,16 +20,70 @@ ME3D.Avatar = function (location) {
 		
 	// default properties
 	this.avatar = new THREE.Object3D();
-	this.body = new THREE.Mesh();
+	this.body = new THREE.Object3D();
 	this.body.useQuaternion = true;
 	this.glowie = new THREE.ParticleSystem();
 	
 	this.updateRate = 30;
 	this.lastUpdate = 1;
+		
+	// body parts geometry
+	console.log(ME3D);
+	var assets = ME3D.Preloader.assets;
+	var head, cape, aura, globe, torso;
+	console.log(assets);
+	head = new THREE.Mesh(assets.meAvatarHead.geometry, assets.meAvatarHead.materials[0]);
+	cape = new THREE.Mesh(assets.meAvatarCape.geometry, assets.meAvatarCape.materials[0]);
+	aura = new THREE.Mesh(assets.meAvatarAura.geometry, assets.meAvatarAura.materials[0]);
+	torso = new THREE.Mesh(assets.meAvatarBody.geometry, assets.meAvatarBody.materials[0]);
+	innerglobe = new THREE.Mesh(assets.meAvatarGlobe.geometry, assets.meAvatarGlobe.materials[0]);
+	var outerglobeMat = new THREE.MeshLambertMaterial();
+	outerglobeMat = assets.meAvatarGlobe.materials[0].clone();
+	outerglobe = new THREE.Mesh(assets.meAvatarGlobe.geometry, outerglobeMat);
+	
+	head.geometry.computeBoundingBox(); head.geometry.computeBoundingSphere();
+	cape.geometry.computeBoundingBox(); cape.geometry.computeBoundingSphere();
+	aura.geometry.computeBoundingBox(); aura.geometry.computeBoundingSphere();
+	torso.geometry.computeBoundingBox(); torso.geometry.computeBoundingSphere();
+	innerglobe.geometry.computeBoundingBox(); innerglobe.geometry.computeBoundingSphere();
+	outerglobe.geometry.computeBoundingBox(); outerglobe.geometry.computeBoundingSphere();
 	
 	
-	this.body.geometry = new THREE.SphereGeometry (.1,20,20);
-	this.body.material = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity: .75, transparent:true});
+	console.log(assets.meAvatarHead.materials[0]);
+	
+	
+	innerglobe.material.transparent  = true;
+	innerglobe.material.opacity  = .3;
+	innerglobe.material.blending  = THREE.AdditiveBlending;
+	innerglobe.material.shading  = THREE.FlatShading;
+	innerglobe.material.depthTest  = false;
+	
+		
+	outerglobe.material.transparent = true;
+	outerglobe.material.wireframe = true;
+	outerglobe.material.opacity = .05;
+	outerglobe.material.wireframeLinewidth = .5
+	
+	aura.material.transparent  = true;
+	aura.material.opacity  = .3;
+	aura.material.blending  = THREE.AdditiveBlending;
+	aura.material.shading  = THREE.FlatShading;
+	aura.material.depthTest  = false;
+	
+	innerglobe.material.needsUpdate = true;
+	outerglobe.material.needsUpdate = true;
+	aura.material.needsUpdate = true;
+	
+	innerglobe.scale.set(.8,.8,.8);
+	outerglobe.scale.set(.8,.8,.8);
+	aura.scale.set(.9,.9,.9);
+		
+	this.body.add(head);
+	this.body.add(cape);
+	this.body.add(aura);
+	this.body.add(torso);
+	this.body.add(innerglobe);
+	this.body.add(outerglobe);
 	this.avatar.position.x = this.location.x;
 	this.avatar.position.y = this.location.y;
 	this.avatar.position.z = this.location.z;
@@ -46,15 +100,15 @@ ME3D.Avatar = function (location) {
 	// create the particle variables
     var particles = new THREE.Geometry();
     var pMaterial = new THREE.ParticleBasicMaterial({
-    	opacity: 1,
-    	size: .75,
+    	opacity: .75,
+    	size: 1.5,
     	map: THREE.ImageUtils.loadTexture(
     		"textures/particle.png"),
     	blending: THREE.AdditiveBlending,
     	transparent: true,
+    	depthWrite: true, depthTest: false
    	});
-   	
-   	pMaterial.depthWrite = false;
+
 	var particle = this.body.position;
 	
 	particles.vertices.push(particle);
@@ -77,7 +131,10 @@ ME3D.Avatar = function (location) {
 	
 	this.spotDir = 'up';
 	this.spotDirSide = 'left';
+	this.globeGlow = false;
 	
+	this.avatar.useQuaternion = true;
+		
 	// function getBoundsMesh() {
 		// return this.body;
 	// }	
@@ -85,10 +142,9 @@ ME3D.Avatar = function (location) {
 	//return this.avatar;
 	//ME3D.registerTick(this);
 	
-	console.log(this.glowie);
+	//console.log(this.glowie);
 	this.tick = function(delta) {
 		var spot = this.glowie.position;
-		
 		this.sparkles.update(delta);
 				
 		if(this.spotDir == 'up') {
@@ -122,11 +178,37 @@ ME3D.Avatar = function (location) {
 				this.spotDir = 'left';
 			}
 		}
-	}
-	
 		
+		
+		// innerglobe.material.opacity  = .3;
+		if(!this.globeGlow) {
+			if(innerglobe.material.opacity  > .1) {
+				innerglobe.material.opacity -= .001;
+				outerglobe.material.opacity -= .001;
+				aura.material.opacity -= .001;
+			} else {
+				this.globeGlow = true;
+			}
+		}
+		
+		if(this.globeGlow) {
+			if(innerglobe.material.opacity  < .4) {
+				innerglobe.material.opacity += .001;
+				outerglobe.material.opacity += .001;
+				aura.material.opacity += .001;
+			} else {
+				this.globeGlow = false;
+			}
+		}
+						
+	} //// end tick ////
 
 };
+
+
+/*
+ * API
+ */
 
 ME3D.Avatar.prototype = {
 	constructor: ME3D.Physics,
@@ -136,7 +218,9 @@ ME3D.Avatar.prototype = {
 	},
 	
 	getBoundsMesh: function() {
-		return this.body;
+		console.log(this.body);
+		//this.body.scale.set(.02,.02,.02);
+		return new THREE.Mesh(new THREE.CubeGeometry(1,1,1));//this.body;
 	},
 	
 	bindCamera: function(camera) {
@@ -167,5 +251,15 @@ ME3D.Avatar.prototype = {
 		// //this.avatar.glowie.position.y += .1;
 		// console.log('wtf');
 	// }
-}
+};
+
+/*
+ * ASSETS
+ */
+
+ME3D.Preloader.add('models/me_avatar_fox_aura.json', 'meAvatarAura');
+ME3D.Preloader.add('models/me_avatar_fox_head.json', 'meAvatarHead');
+ME3D.Preloader.add('models/me_avatar_fox_body.json', 'meAvatarBody');
+ME3D.Preloader.add('models/me_avatar_fox_cape.json', 'meAvatarCape');
+ME3D.Preloader.add('models/me_avatar_fox_globe.json', 'meAvatarGlobe');
 

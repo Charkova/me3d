@@ -8,7 +8,7 @@
  * https://github.com/mrdoob/three.js/blob/master/examples/js/controls/FirstPersonControls.js
  */
 
-ME3D.AvatarControls = function (object, element, domElement) {
+ME3D.AvatarControls = function (object, animTarget, element, domElement) {
 	
 	var self = this;
 	
@@ -112,8 +112,18 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		var recoverCamSpeed = delta * this.camSpeed;
 		
 		
+		
+		
+		
 		// FORWARD
-		if ( this.moveForward ) { 
+		if ( this.moveForward ) {
+			
+			// var quaternion = new THREE.Quaternion();
+			// quaternion.setFromAxisAngle( new THREE.Vector3( 1, 1, 0 ), Math.PI / 2 );
+			// this.object.quaternion.copy( quaternion );
+			
+			this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(135));
+			
 			this.object.position.x -= actualMoveSpeed;
 			this.object.position.z -= actualMoveSpeed;
 			//console.log(this.element.getChildByName('cameraTarget').position.x);
@@ -127,7 +137,8 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		
 				
 		// BACKWARD
-		if ( this.moveBackward ) { 
+		if ( this.moveBackward ) {
+			this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(-45)); 
 			this.object.position.x += actualMoveSpeed;
 			this.object.position.z += actualMoveSpeed;
 			//console.log(this.element.getChildByName('cameraTarget').position.x);
@@ -141,6 +152,7 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		
 		// LEFT
 		if ( this.moveLeft ) { 
+			this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(45)); 
 			this.object.position.x -= actualMoveSpeed;
 			this.object.position.z += actualMoveSpeed;
 			//console.log(this.element.getChildByName('cameraTarget').position.x);
@@ -153,7 +165,8 @@ ME3D.AvatarControls = function (object, element, domElement) {
 		} 
 		
 		// RIGHT
-		if ( this.moveRight ) { 
+		if ( this.moveRight ) {
+			this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(225)); 
 			this.object.position.x += actualMoveSpeed;
 			this.object.position.z -= actualMoveSpeed;
 			//console.log(this.element.getChildByName('cameraTarget').position.x);
@@ -164,7 +177,11 @@ ME3D.AvatarControls = function (object, element, domElement) {
 				this.element.getChildByName('cameraTarget').position.z += actualCamSpeed;
 			}
 		} 
-								
+				
+		if ( this.moveRight && this.moveForward) { this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(180)); }
+		if ( this.moveRight && this.moveBackward) { this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(-90)); }
+		if ( this.moveLeft && this.moveForward) { this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(90)); }
+		if ( this.moveLeft && this.moveBackward) { this.object.quaternion.setFromAxisAngle( new THREE.Vector3( 0, -1, 0 ), ME3D.de2ra(0)); }				
 			
 		// RECOVER	
 		if( !this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight) {

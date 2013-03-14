@@ -1,0 +1,48 @@
+{
+
+    "metadata" :
+    {
+        "formatVersion" : 3.1,
+        "sourceFile"    : "me_avatar_fox_cape.obj",
+        "generatedBy"   : "OBJConverter",
+        "vertices"      : 9,
+        "faces"         : 4,
+        "normals"       : 4,
+        "colors"        : 0,
+        "uvs"           : 9,
+        "materials"     : 1
+    },
+
+    "scale" : 1.000000,
+
+    "materials": [	{
+	"DbgColor" : 15658734,
+	"DbgIndex" : 0,
+	"DbgName" : "Material__52",
+	"colorAmbient" : [0.0, 0.9882, 1.0],
+	"colorDiffuse" : [0.0, 0.9882, 1.0],
+	"colorSpecular" : [0.0, 0.0, 0.0],
+	"illumination" : 2,
+	"mapAlpha" : "meavatar_fox_cape2alpha.png",
+	"mapAmbient" : "meavatar_fox_cape2.png",
+	"mapDiffuse" : "meavatar_fox_cape2.png",
+	"opticalDensity" : 1.5,
+	"specularCoef" : 0.0,
+	"transparency" : 0.0
+	}],
+
+    "vertices": [1.944100,3.904800,-1.673100,-1.944100,3.904800,-1.673100,0.203700,6.321300,-2.523200,2.885700,1.896600,-4.602200,-2.885600,1.896600,-4.602200,-3.537200,-3.104200,-5.955100,3.537200,-3.104200,-5.955100,6.079900,-7.015900,-9.598900,-6.079800,-7.015900,-9.598900],
+
+    "morphTargets": [],
+
+    "morphColors": [],
+
+    "normals": [0,-0.3318,-0.9433,0,0.8248,-0.5655,0,0.2612,-0.9653,0,0.6816,-0.7317],
+
+    "colors": [],
+
+    "uvs": [[0.3638,0.8026,0.6408,0.8026,0.4878,0.9748,0.2966,0.6594,0.7079,0.6594,0.7544,0.3031,0.2502,0.3031,0.069,0.0243,0.9356,0.0243]],
+
+    "faces": [42,0,1,2,0,0,1,2,0,0,0,43,3,4,1,0,0,3,4,1,0,1,1,1,1,43,5,4,3,6,0,5,4,3,6,2,2,2,2,43,7,8,5,6,0,7,8,5,6,3,3,3,3]
+
+}

@@ -59,7 +59,8 @@ ME3D.World = function (world) {
 ME3D.World.prototype = {
 	constructor: ME3D.World,
 	
-	preload: function() {
+	preload: function(MEassets, callback) {
+				
 		var camera = this.cityView.camera;
 		camera.fov = 120;
 		camera.updateProjectionMatrix();
@@ -67,7 +68,7 @@ ME3D.World.prototype = {
 		$('#indicator').fadeIn(2000, function() {
 			$('#progress').show();
 			$('#progress').text('0%');
-			var progress = 0;
+			var progress = 100;
 			var fovTarget = 0;
 			var preloadTimer = window.setInterval(function(){
 				if(progress >= 25) { $('.percent25').show(); }
@@ -79,18 +80,20 @@ ME3D.World.prototype = {
 				} else {
 					$('.percent100').show();
 					$('#proceed button').fadeIn().on('click', function(){
+						
 						$('#splash').fadeOut({duration:3000, step:function(){
 							if (camera.fov > 60) {
 								camera.fov -= .5;
 								camera.updateProjectionMatrix();
-								console.log(camera.fov);
+								//console.log(camera.fov);
 							}
 						}});
 					});
 					window.clearInterval(preloadTimer);
 				}
-			},25);
+			},10);
 		});
+					
 		
 	},
 	

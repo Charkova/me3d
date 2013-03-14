@@ -22,7 +22,6 @@ ME3D.Builder = function (scene, physics) {
 		
 	var loader = new THREE.JSONLoader();
 	var material = new THREE.MeshBasicMaterial({color: 0x00FFFF, side:THREE.DoubleSide, opacity:.85, transparent:true});
-	var loader = new THREE.JSONLoader();
 	var baseGeo, baseMesh;
 	var floorGeo, floorMesh;
 	var crownGeo, crownMesh;

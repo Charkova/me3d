@@ -9576,7 +9576,9 @@ THREE.ImageLoader.prototype = {
 
 THREE.JSONLoader = function ( showStatus ) {
 
+	//THREE.EventDispatcher.call( this );
 	THREE.Loader.call( this, showStatus );
+	
 
 	this.withCredentials = false;
 
@@ -9593,7 +9595,7 @@ THREE.JSONLoader.prototype.load = function ( url, callback, texturePath ) {
 	texturePath = texturePath && ( typeof texturePath === "string" ) ? texturePath : this.extractUrlBase( url );
 
 	this.onLoadStart();
-	this.loadAjaxJSON( this, url, callback, texturePath );
+	this.loadAjaxJSON( this, url, callback, texturePath, this.onLoadProgress );
 
 };
 
@@ -9661,7 +9663,7 @@ THREE.JSONLoader.prototype.loadAjaxJSON = function ( context, url, callback, tex
 };
 
 THREE.JSONLoader.prototype.createModel = function ( json, callback, texturePath ) {
-
+	
 	var scope = this,
 	geometry = new THREE.Geometry(),
 	scale = ( json.scale !== undefined ) ? 1.0 / json.scale : 1.0;

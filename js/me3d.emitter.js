@@ -22,8 +22,7 @@ ME3D.Emitter = function () {
     	map: THREE.ImageUtils.loadTexture(
     		"textures/particle.png"),
     	blending: THREE.AdditiveBlending,
-    	transparent: true,
-    	depthWrite: false
+    	transparent: true, depthTest:false
    	});
    	
    	for(var i=0,j=this.amount; i<j; i++){
@@ -33,7 +32,7 @@ ME3D.Emitter = function () {
    			pZ = Math.random() * .300 - .150,
    			particle = new THREE.Vertex(
 	   			new THREE.Vector3(pX,pY,pZ));
-   		console.log(this.particleGeo.vertices);
+   		//console.log(this.particleGeo.vertices);
    		this.particleGeo.vertices.push(particle);
    		
 	 };
@@ -53,7 +52,6 @@ ME3D.Emitter = function () {
      	
      	while(pCount--) {
      		var particle = this.particleGeo.vertices[pCount];
-     		//console.log(this.particleGeo);
      		if(particle.y > .75 ) {
      			particle.y = Math.random() * .300 - .150;
      		}

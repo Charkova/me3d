@@ -1,0 +1,60 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 13.03.2013 03:42:40
+
+newmtl Material__48
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.9882 1.0000
+	Kd 0.0000 0.9882 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\xampp\htdocs\me3d\textures\meavatar_fox_aura3.png
+	map_Kd C:\xampp\htdocs\me3d\textures\meavatar_fox_aura3.png
+	map_d C:\xampp\htdocs\me3d\textures\meavatar_fox_aura2alpha.png
+
+newmtl Material__52
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.9882 1.0000
+	Kd 0.0000 0.9882 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.3725 0.3765
+	map_Ka C:\xampp\htdocs\me3d\textures\meavatar_fox_cape2.png
+	map_Kd C:\xampp\htdocs\me3d\textures\meavatar_fox_cape2.png
+	map_d C:\xampp\htdocs\me3d\textures\meavatar_fox_cape2alpha.png
+
+newmtl Material__54
+	Ns 35.0000
+	Ni 1.5000
+	d 0.7000
+	Tr 0.3000
+	Tf 0.7000 0.7000 0.7000 
+	illum 2
+	Ka 0.0000 0.9882 1.0000
+	Kd 0.0000 0.9882 1.0000
+	Ks 0.3600 0.3600 0.3600
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\xampp\htdocs\me3d\textures\meavatar_fox_head.png
+	map_Kd C:\xampp\htdocs\me3d\textures\meavatar_fox_head.png
+
+newmtl Material__53
+	Ns 36.0000
+	Ni 1.5000
+	d 0.8000
+	Tr 0.2000
+	Tf 0.8000 0.8000 0.8000 
+	illum 2
+	Ka 0.0000 0.9882 1.0000
+	Kd 0.0000 0.9882 1.0000
+	Ks 0.4680 0.4680 0.4680
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\xampp\htdocs\me3d\textures\meavatar_fox_body.png
+	map_Kd C:\xampp\htdocs\me3d\textures\meavatar_fox_body.png

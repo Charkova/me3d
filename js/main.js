@@ -9,8 +9,21 @@ $(document).ready(function(){
 	 * will be expanded to include managers/observers;
 	 */
 	
+	// shortcut to preloader in me3d.js
+	// assets are queued to load from their object file
+	var PRELOADER = ME3D.Preloader;
+	
+	// load all of the queued assets and start main
+	PRELOADER.load(main);	
+		
+	// main execution
+	function main() {
+			
 	var MEAPP = new ME3D.World();
 	
+	MEAPP.preload();
+		
+		
 	// LOCAL REFERENCES //
 	//////////////////////
 	var CITY = MEAPP.cityView,
@@ -23,7 +36,7 @@ $(document).ready(function(){
 		CLOCK = MEAPP.clock;
 		ELEMENT = RENDERER.element;
 	
-	MEAPP.preload();
+	
 	
 	// GLOBAL EVENT LISTENERS //
 	////////////////////////////
@@ -56,7 +69,9 @@ $(document).ready(function(){
 	///////////////////////
 	var myAvatar = new ME3D.Avatar(new THREE.Vector3(1,1,1));
 	CITY.scene.add(myAvatar.getAvatar());
+	myAvatar.body.scale.set(.02,.02,.02);
 	var myAvatarBounds = BOUNDS.getBoundsMax(myAvatar.getBoundsMesh());
+	console.log(myAvatarBounds);
 	myAvatarBounds.multiplyScalar(1.8);
 	var myAvatarController = PHYSICS.addMassBody(myAvatar.getAvatar(),myAvatarBounds,3);
 	
@@ -65,7 +80,7 @@ $(document).ready(function(){
 	var cubeMap = THREE.ImageUtils.loadTexture("textures/boxStripe.gif");	
 	var testCube = new THREE.Mesh(
 		new THREE.CubeGeometry(1,1,1),
-		new THREE.MeshLambertMaterial({
+		new THREE.MeshPhongMaterial({
 			map: cubeMap, emissive:0x007777,
 			opacity: .75, transparent:true,
 			side:THREE.DoubleSide}));
@@ -93,7 +108,7 @@ $(document).ready(function(){
 		
 	// CONTROLS //	
 	//////////////
-	var controlsA = new ME3D.AvatarControls(myAvatarController, myAvatar.avatar);
+	var controlsA = new ME3D.AvatarControls(myAvatarController,'', myAvatar.avatar);
 	
 	// RENDERER //
 	//////////////
@@ -113,5 +128,9 @@ $(document).ready(function(){
 	
 	RENDERER.queueRender(renderLoop,'');
 	RENDERER.queueAnimation(runPhysics,'');
+	
+	}
+	
+	
 
 });
